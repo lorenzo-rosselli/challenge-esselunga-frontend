@@ -1,4 +1,4 @@
-# challenge-esselunga-backend
+# challenge-esselunga-frontend
 Progetto realizzato per un colloquio con Esselunga.
 Al candidato è richiesto lo sviluppo della parte backend e frontend.
 
