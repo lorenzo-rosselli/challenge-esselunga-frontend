@@ -4,8 +4,10 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { CampoIndirizzo } from '../../components/campo-indirizzo/campo-indirizzo';
 import { Articolo, CreazioneSpesa, Magazzino } from '../../core/models';
 import { ArticoloService } from '../../core/services/articolo.service';
+import { SuggerimentoIndirizzo } from '../../core/services/geocodifica.service';
 import { MagazzinoService } from '../../core/services/magazzino.service';
 import { SpesaService } from '../../core/services/spesa.service';
 import { messaggiErrore } from '../../shared/messaggi-errore';
@@ -29,7 +31,7 @@ const NON_VUOTO = /\S/;
  */
 @Component({
   selector: 'app-nuova-spesa',
-  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe],
+  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe, CampoIndirizzo],
   templateUrl: './nuova-spesa.html',
   styleUrl: './nuova-spesa.css',
 })
@@ -40,7 +42,11 @@ export class NuovaSpesa implements OnInit {
   private readonly magazzinoService = inject(MagazzinoService);
   private readonly articoloService = inject(ArticoloService);
 
-  /** Dati di consegna: stessi vincoli della validazione del backend. */
+  /**
+   * Dati di consegna: stessi vincoli della validazione del backend.
+   * Indirizzo, latitudine e longitudine sono valorizzati insieme quando l'utente sceglie
+   * un indirizzo dai suggerimenti; le coordinate non sono mostrate.
+   */
   protected readonly form = this.fb.nonNullable.group({
     nomeCliente: ['', [Validators.required, Validators.pattern(NON_VUOTO)]],
     indirizzoConsegna: ['', [Validators.required, Validators.pattern(NON_VUOTO)]],
@@ -67,6 +73,23 @@ export class NuovaSpesa implements OnInit {
   protected readonly invio = signal(false);
   protected readonly erroriInvio = signal<string[]>([]);
   protected readonly tentatoInvio = signal(false);
+
+  /** Indirizzo scelto (o annullato) nel campo con i suggerimenti. */
+  protected indirizzoScelto(scelta: SuggerimentoIndirizzo | null): void {
+    this.form.patchValue({
+      indirizzoConsegna: scelta?.indirizzo ?? '',
+      latitudine: scelta?.posizione.latitudine ?? null,
+      longitudine: scelta?.posizione.longitudine ?? null,
+    });
+  }
+
+  /** L'indirizzo non e' valido finche' non e' stato scelto dai suggerimenti (coordinate presenti). */
+  protected indirizzoNonValido(): boolean {
+    const controlli = this.form.controls;
+    const nonValido =
+      controlli.indirizzoConsegna.invalid || controlli.latitudine.invalid || controlli.longitudine.invalid;
+    return nonValido && (controlli.indirizzoConsegna.touched || this.tentatoInvio());
+  }
 
   protected readonly riepilogo = computed<RigaRiepilogo[]>(() =>
     this.articoli()

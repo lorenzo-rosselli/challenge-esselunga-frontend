@@ -64,43 +64,12 @@
 
             <div class="col-12">
               <label for="indirizzoConsegna" class="form-label">Indirizzo di consegna</label>
-              <input
-                id="indirizzoConsegna"
-                type="text"
-                class="form-control"
-                placeholder="Via, numero civico, città"
-                formControlName="indirizzoConsegna"
-                [class.is-invalid]="nonValido('indirizzoConsegna')"
+              <app-campo-indirizzo
+                idCampo="indirizzoConsegna"
+                [nonValido]="indirizzoNonValido()"
+                (indirizzoScelto)="indirizzoScelto($event)"
+                (toccato)="form.controls.indirizzoConsegna.markAsTouched()"
               />
-              <div class="invalid-feedback">L'indirizzo di consegna è obbligatorio.</div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="latitudine" class="form-label">Latitudine</label>
-              <input
-                id="latitudine"
-                type="number"
-                step="any"
-                class="form-control"
-                placeholder="es. 45.4642"
-                formControlName="latitudine"
-                [class.is-invalid]="nonValido('latitudine')"
-              />
-              <div class="invalid-feedback">Inserire una latitudine compresa tra -90 e 90.</div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="longitudine" class="form-label">Longitudine</label>
-              <input
-                id="longitudine"
-                type="number"
-                step="any"
-                class="form-control"
-                placeholder="es. 9.1900"
-                formControlName="longitudine"
-                [class.is-invalid]="nonValido('longitudine')"
-              />
-              <div class="invalid-feedback">Inserire una longitudine compresa tra -180 e 180.</div>
             </div>
           </div>
         </div>

@@ -14,9 +14,9 @@ import { Magazzino, Percorso, Posizione } from '../../core/models';
 import { MagazzinoService } from '../../core/services/magazzino.service';
 import { OsrmService } from '../../core/services/osrm.service';
 
-/** Centro e zoom iniziali della mappa (nord Italia), prima della scelta del magazzino. */
-const CENTRO_INIZIALE: L.LatLngExpression = [45.46, 9.19];
-const ZOOM_INIZIALE = 8;
+/** Centro e zoom iniziali della mappa (area Firenze - Prato - Pistoia), prima della scelta del magazzino. */
+const CENTRO_INIZIALE: L.LatLngExpression = [43.82, 11.12];
+const ZOOM_INIZIALE = 10;
 
 /**
  * UC4 - Percorsi di consegna.

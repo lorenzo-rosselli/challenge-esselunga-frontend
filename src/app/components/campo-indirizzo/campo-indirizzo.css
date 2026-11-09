@@ -1,0 +1,37 @@
+.campo {
+  position: relative;
+}
+
+.suggerimenti {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(13, 71, 161, 0.15);
+}
+
+.suggerimenti .list-group-item {
+  cursor: pointer;
+  color: var(--gs-blu);
+  border-color: var(--gs-bordo);
+}
+
+.suggerimenti .list-group-item:hover {
+  background-color: var(--gs-blu-chiaro);
+}
+
+.suggerimenti .list-group-item.active {
+  background-color: var(--gs-blu);
+  border-color: var(--gs-blu);
+  color: #ffffff;
+}
+
+.localita {
+  display: block;
+  margin-left: 1.5rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}

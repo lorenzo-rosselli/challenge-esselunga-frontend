@@ -1,0 +1,52 @@
+<div class="campo">
+  <div class="input-group" [class.has-validation]="nonValido()">
+    <span class="input-group-text"><i class="bi bi-geo-alt" aria-hidden="true"></i></span>
+    <input
+      [id]="idCampo()"
+      type="text"
+      class="form-control"
+      placeholder="Inizia a scrivere la via e scegli dai suggerimenti"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      [attr.aria-expanded]="aperto() && suggerimenti().length > 0"
+      [attr.aria-controls]="idCampo() + '-suggerimenti'"
+      [class.is-invalid]="nonValido()"
+      [value]="testo()"
+      (input)="digita($any($event.target).value)"
+      (keydown)="tasto($event)"
+      (blur)="uscita()"
+    />
+    @if (ricerca()) {
+      <span class="input-group-text">
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      </span>
+    }
+    <div class="invalid-feedback">Selezionare un indirizzo dall'elenco dei suggerimenti.</div>
+  </div>
+
+  @if (aperto() && suggerimenti().length > 0) {
+    <ul class="list-group suggerimenti" role="listbox" [id]="idCampo() + '-suggerimenti'">
+      @for (suggerimento of suggerimenti(); track suggerimento.indirizzo; let i = $index) {
+        <!-- mousedown: scelta prima che il campo perda il focus e chiuda l'elenco -->
+        <li
+          class="list-group-item list-group-item-action"
+          role="option"
+          [class.active]="i === evidenziato()"
+          [attr.aria-selected]="i === evidenziato()"
+          (mousedown)="$event.preventDefault(); scegli(suggerimento)"
+        >
+          <i class="bi bi-geo-alt-fill me-2" aria-hidden="true"></i>
+          <span class="fw-semibold">{{ suggerimento.via }}</span>
+          <span class="localita">{{ suggerimento.localita }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (erroreServizio()) {
+    <div class="small text-danger mt-1">
+      Servizio di ricerca degli indirizzi non raggiungibile: riprovare tra poco.
+    </div>
+  }
+</div>
