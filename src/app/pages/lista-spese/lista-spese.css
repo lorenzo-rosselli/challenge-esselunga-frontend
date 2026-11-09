@@ -1,0 +1,27 @@
+.intestazione {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tabella {
+  border: 1px solid var(--gs-bordo);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.06);
+}
+
+.vuoto {
+  padding: 3rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--gs-bordo);
+  border-radius: 0.5rem;
+  background-color: var(--gs-blu-chiaro);
+}
+
+.vuoto i {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}

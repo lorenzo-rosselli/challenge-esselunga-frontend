@@ -1,0 +1,17 @@
+<nav class="sidebar" aria-label="Menu principale">
+  <ul class="nav flex-column">
+    @for (voce of voci; track voce.link) {
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [routerLink]="voce.link"
+          routerLinkActive="attivo"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi {{ voce.icona }}" aria-hidden="true"></i>
+          <span>{{ voce.etichetta }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

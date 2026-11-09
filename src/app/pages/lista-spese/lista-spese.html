@@ -1,0 +1,65 @@
+<div class="intestazione">
+  <div>
+    <h1 class="h3 mb-1">Spese</h1>
+    <p class="text-body-secondary mb-0">Elenco delle spese online con il loro stato</p>
+  </div>
+
+  <a class="btn btn-primary" routerLink="/spese/nuova">
+    <i class="bi bi-cart-plus" aria-hidden="true"></i>
+    Nuova spesa
+  </a>
+</div>
+
+@if (caricamento()) {
+  <div class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Caricamento...</span>
+    </div>
+  </div>
+} @else if (errore()) {
+  <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+    <span>
+      <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+      Impossibile caricare le spese: verificare che il backend sia avviato.
+    </span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="carica()">Riprova</button>
+  </div>
+} @else if (spese().length === 0) {
+  <div class="vuoto">
+    <i class="bi bi-basket2" aria-hidden="true"></i>
+    <p class="mb-0">Non ci sono ancora spese: creane una con il bottone "Nuova spesa".</p>
+  </div>
+} @else {
+  <div class="table-responsive tabella">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col">Cliente</th>
+          <th scope="col">Indirizzo di consegna</th>
+          <th scope="col">Magazzino</th>
+          <th scope="col" class="text-end">Articoli</th>
+          <th scope="col" class="text-end">Totale</th>
+          <th scope="col">Stato</th>
+          <th scope="col">Creata il</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (spesa of spese(); track spesa.id) {
+          <tr>
+            <td class="fw-semibold">{{ spesa.nomeCliente }}</td>
+            <td>{{ spesa.indirizzoConsegna }}</td>
+            <td>{{ nomiMagazzini().get(spesa.magazzinoId) ?? '-' }}</td>
+            <td class="text-end">{{ numeroArticoli(spesa) }}</td>
+            <td class="text-end fw-semibold">{{ spesa.totale | currency: 'EUR' }}</td>
+            <td>
+              <span class="badge rounded-pill {{ stati[spesa.stato].classe }}">
+                {{ stati[spesa.stato].etichetta }}
+              </span>
+            </td>
+            <td class="text-nowrap">{{ spesa.dataCreazione | date: 'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

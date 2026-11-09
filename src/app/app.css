@@ -1,0 +1,26 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout {
+  display: flex;
+  flex: 1;
+}
+
+.contenuto {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem 2rem;
+}
+
+@media (max-width: 767.98px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .contenuto {
+    padding: 1rem;
+  }
+}

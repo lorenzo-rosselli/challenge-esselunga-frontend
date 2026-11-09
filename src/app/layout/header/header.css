@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--gs-bordo);
+  box-shadow: 0 2px 6px rgba(13, 71, 161, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.marchio {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gs-blu);
+  text-decoration: none;
+}
+
+.marchio i {
+  font-size: 1.6rem;
+}

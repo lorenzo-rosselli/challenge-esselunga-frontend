@@ -1,1 +1,75 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Tema dell'applicazione: sfondo bianco, testi in blu, bottoni e intestazioni di tabella
+ * con sfondo blu e testo bianco. Si sovrascrivono le variabili CSS di Bootstrap 5.3,
+ * senza modificare la struttura dei suoi componenti.
+ */
+:root {
+  --gs-blu: #0d47a1;
+  --gs-blu-scuro: #0a3578;
+  --gs-blu-medio: #1e64c8;
+  --gs-blu-chiaro: #e8f1fc;
+  --gs-bordo: #d6e2f3;
+
+  --bs-primary: var(--gs-blu);
+  --bs-primary-rgb: 13, 71, 161;
+  --bs-body-bg: #ffffff;
+  --bs-body-color: var(--gs-blu);
+  --bs-heading-color: var(--gs-blu);
+  --bs-link-color: var(--gs-blu-medio);
+  --bs-link-color-rgb: 30, 100, 200;
+  --bs-link-hover-color: var(--gs-blu-scuro);
+  --bs-link-hover-color-rgb: 10, 53, 120;
+  --bs-border-color: var(--gs-bordo);
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--gs-blu);
+}
+
+/* Bottoni principali: sfondo blu, testo bianco */
+.btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: var(--gs-blu);
+  --bs-btn-border-color: var(--gs-blu);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--gs-blu-scuro);
+  --bs-btn-hover-border-color: var(--gs-blu-scuro);
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: var(--gs-blu-scuro);
+  --bs-btn-active-border-color: var(--gs-blu-scuro);
+  --bs-btn-disabled-color: #ffffff;
+  --bs-btn-disabled-bg: var(--gs-blu-medio);
+  --bs-btn-disabled-border-color: var(--gs-blu-medio);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--gs-blu);
+  --bs-btn-border-color: var(--gs-blu);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--gs-blu);
+  --bs-btn-hover-border-color: var(--gs-blu);
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: var(--gs-blu-scuro);
+  --bs-btn-active-border-color: var(--gs-blu-scuro);
+}
+
+/* Tabelle: intestazione blu con testo bianco, righe con testo blu */
+.table {
+  --bs-table-color: var(--gs-blu);
+  --bs-table-hover-bg: var(--gs-blu-chiaro);
+  --bs-table-hover-color: var(--gs-blu);
+  --bs-table-border-color: var(--gs-bordo);
+}
+
+.table > thead > tr > th {
+  --bs-table-bg: var(--gs-blu);
+  --bs-table-color: #ffffff;
+  color: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.spinner-border {
+  color: var(--gs-blu);
+}
