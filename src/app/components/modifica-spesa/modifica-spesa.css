@@ -1,0 +1,76 @@
+/* Sfondo che copre e sfoca la pagina sottostante, impedendo di interagire con essa */
+.sfondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(10, 53, 120, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modale {
+  width: 100%;
+  max-width: 720px;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  border-color: var(--gs-bordo);
+  box-shadow: 0 12px 40px rgba(10, 53, 120, 0.25);
+}
+
+.modale form {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+}
+
+.card-header,
+.card-footer {
+  background-color: #ffffff;
+  border-color: var(--gs-bordo);
+}
+
+.corpo {
+  overflow-y: auto;
+}
+
+.riepilogo-dati {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--gs-blu-chiaro);
+}
+
+.riepilogo-dati > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+/* l'identificativo occupa tutta la riga del riepilogo */
+.id-spesa {
+  grid-column: 1 / -1;
+}
+
+.id-spesa .fw-semibold {
+  font-family: var(--bs-font-monospace);
+  word-break: break-all;
+}
+
+.etichetta {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
+}
+
+.tabella {
+  border: 1px solid var(--gs-bordo);
+  border-radius: 0.5rem;
+}

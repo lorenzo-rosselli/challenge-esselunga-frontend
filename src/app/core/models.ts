@@ -42,4 +42,44 @@ export interface Articolo {
   nome: string;
   descrizione: string;
   prezzo: number;
+}
+
+/** Elemento della richiesta di creazione: solo articolo e quantita' (il resto lo calcola il backend). */
+export interface ElementoCreazioneSpesa {
+  articoloId: string;
+  quantita: number;
+}
+
+/** Corpo della richiesta POST /spese (UC1). */
+export interface CreazioneSpesa {
+  nomeCliente: string;
+  indirizzoConsegna: string;
+  posizioneConsegna: Posizione;
+  magazzinoId: string;
+  articoli: ElementoCreazioneSpesa[];
+}
+
+/**
+ * Corpo della richiesta PATCH /spese/{id} (UC2): si inviano solo i campi da cambiare.
+ * Indirizzo e posizione vanno sempre inviati insieme; la versione e' quella letta dal client.
+ */
+export interface ModificaSpesa {
+  nomeCliente?: string;
+  indirizzoConsegna?: string;
+  posizioneConsegna?: Posizione;
+  versione: number;
+}
+
+/** Corpo delle risposte di errore applicativo del backend (400, 404, 409). */
+export interface ErroreApi {
+  codice: number;
+  errore: string;
+  messaggio: string;
+}
+
+/** Corpo delle risposte 400 di validazione dei dati (Bean Validation). */
+export interface ErroreValidazione {
+  title: string;
+  status: number;
+  violations: { field: string; message: string }[];
 }

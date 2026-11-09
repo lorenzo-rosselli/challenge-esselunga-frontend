@@ -1,0 +1,80 @@
+.intestazione {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sezione {
+  border-color: var(--gs-bordo);
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.06);
+}
+
+/* Schede articolo */
+.articolo {
+  border-color: var(--gs-bordo);
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.articolo:hover {
+  box-shadow: 0 6px 18px rgba(13, 71, 161, 0.12);
+  transform: translateY(-2px);
+}
+
+.articolo.selezionato {
+  border-color: var(--gs-blu);
+  box-shadow: 0 0 0 1px var(--gs-blu);
+}
+
+.immagine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+  background: linear-gradient(135deg, var(--gs-blu-chiaro), #ffffff);
+  border-bottom: 1px solid var(--gs-bordo);
+  border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+  font-size: 2.75rem;
+  color: var(--gs-blu-medio);
+}
+
+.descrizione {
+  min-height: 2.5em;
+}
+
+.prezzo {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.quantita {
+  width: 120px;
+}
+
+/* nasconde le frecce del campo numerico: la quantita' si cambia con i bottoni */
+.quantita input::-webkit-outer-spin-button,
+.quantita input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantita input {
+  -moz-appearance: textfield;
+}
+
+/* Riepilogo sempre visibile durante lo scorrimento su schermi grandi */
+@media (min-width: 992px) {
+  .riepilogo {
+    position: sticky;
+    top: calc(64px + 1.5rem);
+  }
+}
+
+.totale {
+  font-size: 1.4rem;
+  font-weight: 700;
+}

@@ -73,3 +73,8 @@ body {
 .spinner-border {
   color: var(--gs-blu);
 }
+
+/* Pagina bloccata mentre una modale e' aperta */
+body.modale-aperta {
+  overflow: hidden;
+}

@@ -6,10 +6,88 @@
   margin-bottom: 1.5rem;
 }
 
+.filtri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtro-cliente {
+  flex: 1 1 260px;
+  max-width: 380px;
+}
+
+.filtro-stato {
+  flex: 0 1 220px;
+}
+
+.filtri-azioni {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.conteggio {
+  margin-left: auto;
+  padding-bottom: 0.5rem;
+}
+
+/* Intestazioni ordinabili: bottone trasparente con testo bianco */
+.intestazione-ordinabile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.intestazione-ordinabile:hover {
+  text-decoration: underline;
+}
+
+.intestazione-ordinabile .inattivo {
+  opacity: 0.45;
+}
+
+.priorita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: var(--gs-blu);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
 .tabella {
   border: 1px solid var(--gs-bordo);
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(13, 71, 161, 0.06);
+}
+
+.id-spesa {
+  font-family: var(--bs-font-monospace);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.azione {
+  width: 2.1rem;
+}
+
+/* il bottone disabilitato non riceve il mouse: il tooltip e' sullo span che lo contiene */
+.azione:disabled,
+.azione.disabled {
+  pointer-events: none;
 }
 
 .vuoto {

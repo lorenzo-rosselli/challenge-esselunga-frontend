@@ -30,36 +30,175 @@
     <p class="mb-0">Non ci sono ancora spese: creane una con il bottone "Nuova spesa".</p>
   </div>
 } @else {
+  @if (erroreAzione()) {
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+      {{ erroreAzione() }}
+      <button type="button" class="btn-close" aria-label="Chiudi" (click)="erroreAzione.set(null)"></button>
+    </div>
+  }
+
+  <!-- Filtri di ricerca -->
+  <div class="filtri">
+    <div class="filtro-cliente">
+      <label for="filtro-cliente" class="form-label small mb-1">Cliente</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input
+          id="filtro-cliente"
+          type="search"
+          class="form-control"
+          placeholder="Cerca per nome del cliente"
+          [value]="filtroCliente()"
+          (input)="filtroCliente.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <div class="filtro-stato">
+      <label for="filtro-stato" class="form-label small mb-1">Stato</label>
+      <select
+        id="filtro-stato"
+        class="form-select"
+        [value]="filtroStato()"
+        (change)="filtroStato.set($any($event.target).value)"
+      >
+        <option value="">Tutti gli stati</option>
+        @for (stato of elencoStati; track stato) {
+          <option [value]="stato">{{ stati[stato].etichetta }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filtri-azioni">
+      @if (filtriAttivi()) {
+        <button type="button" class="btn btn-outline-primary" (click)="azzeraFiltri()">
+          <i class="bi bi-x-circle" aria-hidden="true"></i>
+          Azzera filtri
+        </button>
+      }
+      @if (ordinamenti().length > 0) {
+        <button type="button" class="btn btn-outline-primary" (click)="ordinamenti.set([])">
+          <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+          Azzera ordinamento
+        </button>
+      }
+    </div>
+
+    <span class="conteggio small text-body-secondary">
+      {{ speseVisualizzate().length }} di {{ spese().length }} spese
+    </span>
+  </div>
+
   <div class="table-responsive tabella">
     <table class="table table-hover align-middle mb-0">
       <thead>
         <tr>
+          <th scope="col">ID</th>
           <th scope="col">Cliente</th>
           <th scope="col">Indirizzo di consegna</th>
-          <th scope="col">Magazzino</th>
-          <th scope="col" class="text-end">Articoli</th>
-          <th scope="col" class="text-end">Totale</th>
+          <th scope="col" [attr.aria-sort]="ariaSort('magazzino')">
+            <button type="button" class="intestazione-ordinabile" (click)="ordinaPer('magazzino')" title="Ordina per magazzino">
+              Magazzino
+              @if (statoOrdinamento('magazzino'); as ordine) {
+                <i class="bi {{ ordine.direzione === 'asc' ? 'bi-sort-up' : 'bi-sort-down' }}" aria-hidden="true"></i>
+                @if (ordinamenti().length > 1) {
+                  <span class="priorita">{{ ordine.priorita }}</span>
+                }
+              } @else {
+                <i class="bi bi-arrow-down-up inattivo" aria-hidden="true"></i>
+              }
+            </button>
+          </th>
+          <th scope="col" [attr.aria-sort]="ariaSort('dataCreazione')">
+            <button type="button" class="intestazione-ordinabile" (click)="ordinaPer('dataCreazione')" title="Ordina per data e ora creazione">
+              Data e ora creazione
+              @if (statoOrdinamento('dataCreazione'); as ordine) {
+                <i class="bi {{ ordine.direzione === 'asc' ? 'bi-sort-up' : 'bi-sort-down' }}" aria-hidden="true"></i>
+                @if (ordinamenti().length > 1) {
+                  <span class="priorita">{{ ordine.priorita }}</span>
+                }
+              } @else {
+                <i class="bi bi-arrow-down-up inattivo" aria-hidden="true"></i>
+              }
+            </button>
+          </th>
+          <th scope="col" class="text-end" [attr.aria-sort]="ariaSort('totale')">
+            <button type="button" class="intestazione-ordinabile" (click)="ordinaPer('totale')" title="Ordina per totale">
+              Totale
+              @if (statoOrdinamento('totale'); as ordine) {
+                <i class="bi {{ ordine.direzione === 'asc' ? 'bi-sort-up' : 'bi-sort-down' }}" aria-hidden="true"></i>
+                @if (ordinamenti().length > 1) {
+                  <span class="priorita">{{ ordine.priorita }}</span>
+                }
+              } @else {
+                <i class="bi bi-arrow-down-up inattivo" aria-hidden="true"></i>
+              }
+            </button>
+          </th>
           <th scope="col">Stato</th>
-          <th scope="col">Creata il</th>
+          <th scope="col" class="text-end"><span class="visually-hidden">Azioni</span></th>
         </tr>
       </thead>
       <tbody>
-        @for (spesa of spese(); track spesa.id) {
+        @for (spesa of speseVisualizzate(); track spesa.id) {
           <tr>
+            <td class="id-spesa">{{ spesa.id }}</td>
             <td class="fw-semibold">{{ spesa.nomeCliente }}</td>
             <td>{{ spesa.indirizzoConsegna }}</td>
             <td>{{ nomiMagazzini().get(spesa.magazzinoId) ?? '-' }}</td>
-            <td class="text-end">{{ numeroArticoli(spesa) }}</td>
+            <td class="text-nowrap">{{ spesa.dataCreazione | date: 'dd/MM/yyyy HH:mm' }}</td>
             <td class="text-end fw-semibold">{{ spesa.totale | currency: 'EUR' }}</td>
             <td>
               <span class="badge rounded-pill {{ stati[spesa.stato].classe }}">
                 {{ stati[spesa.stato].etichetta }}
               </span>
             </td>
-            <td class="text-nowrap">{{ spesa.dataCreazione | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="text-end text-nowrap">
+              <!-- span: il tooltip resta visibile anche quando il bottone e' disabilitato -->
+              <span class="d-inline-block" [title]="descrizioneModifica(spesa)">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary azione"
+                  [disabled]="!stati[spesa.stato].modificabile"
+                  (click)="apriModifica(spesa)"
+                  [attr.aria-label]="descrizioneModifica(spesa)"
+                >
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
+                </button>
+              </span>
+              <span class="d-inline-block ms-1" [title]="descrizioneAvanzamento(spesa)">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary azione"
+                  [disabled]="!stati[spesa.stato].successivo || inAvanzamento() !== null"
+                  (click)="avanzaStato(spesa)"
+                  [attr.aria-label]="descrizioneAvanzamento(spesa)"
+                >
+                  @if (inAvanzamento() === spesa.id) {
+                    <span class="spinner-border spinner-border-sm text-white" aria-hidden="true"></span>
+                  } @else {
+                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+                  }
+                </button>
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="text-center py-4">Nessuna spesa corrisponde ai filtri selezionati.</td>
           </tr>
         }
       </tbody>
     </table>
   </div>
+}
+
+@if (spesaInModifica(); as spesa) {
+  <app-modifica-spesa
+    [spesa]="spesa"
+    [nomeMagazzino]="nomiMagazzini().get(spesa.magazzinoId) ?? '-'"
+    (chiusa)="spesaInModifica.set(null)"
+    (salvata)="modificaSalvata($event)"
+  />
 }

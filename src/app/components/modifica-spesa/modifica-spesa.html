@@ -1,0 +1,169 @@
+<div class="sfondo">
+  <div
+    class="modale card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titolo-modifica"
+  >
+    <form [formGroup]="form" (ngSubmit)="salva()" novalidate>
+      <!-- Intestazione -->
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <div>
+          <h2 id="titolo-modifica" class="h5 mb-0">
+            <i class="bi bi-pencil-square me-2" aria-hidden="true"></i>Modifica spesa
+          </h2>
+          <span class="small text-body-secondary">
+            Creata il {{ spesa().dataCreazione | date: 'dd/MM/yyyy HH:mm' }} · ultima modifica
+            {{ spesa().dataUltimaModifica | date: 'dd/MM/yyyy HH:mm' }}
+          </span>
+        </div>
+        <button type="button" class="btn-close" aria-label="Chiudi" (click)="chiudi()"></button>
+      </div>
+
+      <div class="card-body corpo">
+        <!-- Informazioni non modificabili -->
+        <div class="riepilogo-dati mb-4">
+          <div class="id-spesa">
+            <span class="etichetta">ID spesa</span>
+            <span class="fw-semibold">{{ spesa().id }}</span>
+          </div>
+          <div>
+            <span class="etichetta">Stato</span>
+            <span class="badge rounded-pill {{ stati[spesa().stato].classe }}">
+              {{ stati[spesa().stato].etichetta }}
+            </span>
+          </div>
+          <div>
+            <span class="etichetta">Magazzino di partenza</span>
+            <span class="fw-semibold">{{ nomeMagazzino() }}</span>
+          </div>
+          <div>
+            <span class="etichetta">Totale</span>
+            <span class="fw-semibold">{{ spesa().totale | currency: 'EUR' }}</span>
+          </div>
+        </div>
+
+        <!-- Campi modificabili -->
+        <h3 class="h6 mb-3">Dati modificabili</h3>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label for="modifica-nomeCliente" class="form-label">Nome del cliente</label>
+            <input
+              id="modifica-nomeCliente"
+              type="text"
+              class="form-control"
+              formControlName="nomeCliente"
+              [class.is-invalid]="nonValido('nomeCliente')"
+            />
+            <div class="invalid-feedback">Il nome del cliente è obbligatorio.</div>
+          </div>
+
+          <div class="col-12">
+            <label for="modifica-indirizzo" class="form-label">Indirizzo di consegna</label>
+            <input
+              id="modifica-indirizzo"
+              type="text"
+              class="form-control"
+              formControlName="indirizzoConsegna"
+              [class.is-invalid]="nonValido('indirizzoConsegna')"
+            />
+            <div class="invalid-feedback">L'indirizzo di consegna è obbligatorio.</div>
+          </div>
+
+          <div class="col-sm-6">
+            <label for="modifica-latitudine" class="form-label">Latitudine</label>
+            <input
+              id="modifica-latitudine"
+              type="number"
+              step="any"
+              class="form-control"
+              formControlName="latitudine"
+              [class.is-invalid]="nonValido('latitudine')"
+            />
+            <div class="invalid-feedback">Inserire una latitudine compresa tra -90 e 90.</div>
+          </div>
+
+          <div class="col-sm-6">
+            <label for="modifica-longitudine" class="form-label">Longitudine</label>
+            <input
+              id="modifica-longitudine"
+              type="number"
+              step="any"
+              class="form-control"
+              formControlName="longitudine"
+              [class.is-invalid]="nonValido('longitudine')"
+            />
+            <div class="invalid-feedback">Inserire una longitudine compresa tra -180 e 180.</div>
+          </div>
+
+          <div class="col-12">
+            <p class="small text-body-secondary mb-0">
+              <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+              Se si corregge l'indirizzo, aggiornare anche latitudine e longitudine: la posizione è
+              quella usata per il percorso di consegna.
+            </p>
+          </div>
+        </div>
+
+        <!-- Articoli della spesa (non modificabili) -->
+        <h3 class="h6 mb-3">Articoli della spesa</h3>
+        <div class="table-responsive tabella">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Articolo</th>
+                <th scope="col" class="text-end">Quantità</th>
+                <th scope="col" class="text-end">Prezzo unitario</th>
+                <th scope="col" class="text-end">Importo</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (elemento of spesa().articoli; track elemento.articoloId) {
+                <tr>
+                  <td>{{ elemento.nome }}</td>
+                  <td class="text-end">{{ elemento.quantita }}</td>
+                  <td class="text-end">{{ elemento.prezzo | currency: 'EUR' }}</td>
+                  <td class="text-end">{{ elemento.prezzoTotale | currency: 'EUR' }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end fw-semibold">Totale</td>
+                <td class="text-end fw-bold">{{ spesa().totale | currency: 'EUR' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        @if (errori().length > 0) {
+          <div class="alert alert-danger small mt-4 mb-0" role="alert">
+            <ul class="mb-0 ps-3">
+              @for (messaggio of errori(); track $index) {
+                <li>{{ messaggio }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+
+      <!-- Azioni -->
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-primary" (click)="chiudi()" [disabled]="invio()">
+          Annulla
+        </button>
+        <span class="d-inline-block" [title]="ciSonoModifiche() ? '' : 'Nessuna modifica da salvare'">
+          <button type="submit" class="btn btn-primary" [disabled]="invio() || !ciSonoModifiche()">
+            @if (invio()) {
+              <span class="spinner-border spinner-border-sm me-2 text-white" aria-hidden="true"></span>
+              Salvataggio...
+            } @else {
+              <i class="bi bi-check-lg" aria-hidden="true"></i>
+              Salva modifiche
+            }
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+</div>

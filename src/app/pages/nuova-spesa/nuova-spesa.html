@@ -1,0 +1,222 @@
+<div class="intestazione">
+  <div>
+    <h1 class="h3 mb-1">Nuova spesa</h1>
+    <p class="text-body-secondary mb-0">Inserisci i dati di consegna e scegli gli articoli</p>
+  </div>
+  <a class="btn btn-outline-primary" routerLink="/">
+    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+    Torna alle spese
+  </a>
+</div>
+
+@if (caricamento()) {
+  <div class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Caricamento...</span>
+    </div>
+  </div>
+} @else if (erroreCaricamento()) {
+  <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+    <span>
+      <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+      Impossibile caricare magazzini e articoli: verificare che il backend sia avviato.
+    </span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="carica()">Riprova</button>
+  </div>
+} @else {
+  <form class="row g-4" [formGroup]="form" (ngSubmit)="crea()" novalidate>
+    <div class="col-lg-8">
+      <!-- Dati di consegna -->
+      <section class="card sezione mb-4">
+        <div class="card-body">
+          <h2 class="h5 mb-3">
+            <i class="bi bi-person-lines-fill me-2" aria-hidden="true"></i>Dati di consegna
+          </h2>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nomeCliente" class="form-label">Nome del cliente</label>
+              <input
+                id="nomeCliente"
+                type="text"
+                class="form-control"
+                formControlName="nomeCliente"
+                [class.is-invalid]="nonValido('nomeCliente')"
+              />
+              <div class="invalid-feedback">Il nome del cliente è obbligatorio.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="magazzinoId" class="form-label">Magazzino di partenza</label>
+              <select
+                id="magazzinoId"
+                class="form-select"
+                formControlName="magazzinoId"
+                [class.is-invalid]="nonValido('magazzinoId')"
+              >
+                <option value="" disabled>Seleziona un magazzino</option>
+                @for (magazzino of magazzini(); track magazzino.id) {
+                  <option [value]="magazzino.id">{{ magazzino.nome }}</option>
+                }
+              </select>
+              <div class="invalid-feedback">Selezionare il magazzino.</div>
+            </div>
+
+            <div class="col-12">
+              <label for="indirizzoConsegna" class="form-label">Indirizzo di consegna</label>
+              <input
+                id="indirizzoConsegna"
+                type="text"
+                class="form-control"
+                placeholder="Via, numero civico, città"
+                formControlName="indirizzoConsegna"
+                [class.is-invalid]="nonValido('indirizzoConsegna')"
+              />
+              <div class="invalid-feedback">L'indirizzo di consegna è obbligatorio.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="latitudine" class="form-label">Latitudine</label>
+              <input
+                id="latitudine"
+                type="number"
+                step="any"
+                class="form-control"
+                placeholder="es. 45.4642"
+                formControlName="latitudine"
+                [class.is-invalid]="nonValido('latitudine')"
+              />
+              <div class="invalid-feedback">Inserire una latitudine compresa tra -90 e 90.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="longitudine" class="form-label">Longitudine</label>
+              <input
+                id="longitudine"
+                type="number"
+                step="any"
+                class="form-control"
+                placeholder="es. 9.1900"
+                formControlName="longitudine"
+                [class.is-invalid]="nonValido('longitudine')"
+              />
+              <div class="invalid-feedback">Inserire una longitudine compresa tra -180 e 180.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Catalogo articoli -->
+      <section>
+        <h2 class="h5 mb-3"><i class="bi bi-shop me-2" aria-hidden="true"></i>Articoli</h2>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3">
+          @for (articolo of articoli(); track articolo.id) {
+            <div class="col">
+              <div class="card h-100 articolo" [class.selezionato]="quantitaDi(articolo) > 0">
+                <div class="immagine" aria-hidden="true">
+                  <i class="bi bi-bag-heart"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h3 class="h6 mb-1">{{ articolo.nome }}</h3>
+                  <p class="descrizione text-body-secondary small mb-3">{{ articolo.descrizione }}</p>
+
+                  <div class="mt-auto d-flex align-items-center justify-content-between gap-2">
+                    <span class="prezzo">{{ articolo.prezzo | currency: 'EUR' }}</span>
+
+                    @if (quantitaDi(articolo) === 0) {
+                      <button type="button" class="btn btn-primary btn-sm" (click)="aggiungi(articolo)">
+                        <i class="bi bi-cart-plus" aria-hidden="true"></i>
+                        Aggiungi
+                      </button>
+                    } @else {
+                      <div class="input-group input-group-sm quantita">
+                        <button
+                          type="button"
+                          class="btn btn-outline-primary"
+                          (click)="togli(articolo)"
+                          [attr.aria-label]="'Togli un ' + articolo.nome"
+                        >
+                          <i class="bi bi-dash-lg" aria-hidden="true"></i>
+                        </button>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          class="form-control text-center"
+                          [value]="quantitaDi(articolo)"
+                          (change)="quantitaDigitata(articolo, $any($event.target).value)"
+                          [attr.aria-label]="'Quantità di ' + articolo.nome"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="aggiungi(articolo)"
+                          [attr.aria-label]="'Aggiungi un ' + articolo.nome"
+                        >
+                          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Riepilogo -->
+    <div class="col-lg-4">
+      <aside class="card sezione riepilogo">
+        <div class="card-body">
+          <h2 class="h5 mb-3"><i class="bi bi-cart3 me-2" aria-hidden="true"></i>Riepilogo</h2>
+
+          @if (riepilogo().length === 0) {
+            <p class="text-body-secondary mb-3" [class.text-danger]="tentatoInvio()">
+              Nessun articolo selezionato: aggiungere almeno un articolo.
+            </p>
+          } @else {
+            <ul class="list-unstyled mb-3">
+              @for (riga of riepilogo(); track riga.articolo.id) {
+                <li class="d-flex justify-content-between gap-2 mb-2">
+                  <span>{{ riga.quantita }} × {{ riga.articolo.nome }}</span>
+                  <span class="text-nowrap">{{ riga.importo | currency: 'EUR' }}</span>
+                </li>
+              }
+            </ul>
+          }
+
+          <div class="d-flex justify-content-between align-items-baseline border-top pt-3">
+            <span class="fw-semibold">Totale ({{ numeroPezzi() }} pezzi)</span>
+            <span class="totale">{{ totaleAnteprima() | currency: 'EUR' }}</span>
+          </div>
+          <p class="small text-body-secondary mt-1 mb-3">
+            Anteprima: il totale definitivo è calcolato al salvataggio.
+          </p>
+
+          @if (erroriInvio().length > 0) {
+            <div class="alert alert-danger small" role="alert">
+              <ul class="mb-0 ps-3">
+                @for (messaggio of erroriInvio(); track $index) {
+                  <li>{{ messaggio }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary w-100" [disabled]="invio()">
+            @if (invio()) {
+              <span class="spinner-border spinner-border-sm me-2 text-white" aria-hidden="true"></span>
+              Creazione in corso...
+            } @else {
+              <i class="bi bi-cart-check" aria-hidden="true"></i>
+              Crea spesa
+            }
+          </button>
+        </div>
+      </aside>
+    </div>
+  </form>
+}
