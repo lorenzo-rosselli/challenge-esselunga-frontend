@@ -1,9 +1,15 @@
+/* il componente occupa tutta l'altezza disponibile accanto al contenuto */
+:host {
+  display: block;
+}
+
 .sidebar {
+  height: 100%;
   width: 240px;
   flex-shrink: 0;
   padding: 1.25rem 0.75rem;
   border-right: 1px solid var(--gs-bordo);
-  background-color: #ffffff;
+  background-color: #eef4fc; /* blu chiaro, in tinta con il tema */
 }
 
 .nav-link {
@@ -18,7 +24,7 @@
 }
 
 .nav-link:hover {
-  background-color: var(--gs-blu-chiaro);
+  background-color: #d9e7f9; /* un tono piu' scuro dello sfondo del menu */
   color: var(--gs-blu-scuro);
 }
 
