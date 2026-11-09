@@ -78,3 +78,25 @@ body {
 body.modale-aperta {
   overflow: hidden;
 }
+
+/* Marcatori della mappa dei percorsi (creati da Leaflet fuori dai componenti Angular) */
+.marcatore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(10, 53, 120, 0.45);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.marcatore-tappa {
+  background-color: var(--gs-blu);
+  font-size: 0.9rem;
+}
+
+.marcatore-magazzino {
+  background-color: var(--gs-blu-scuro);
+  font-size: 1.15rem;
+}

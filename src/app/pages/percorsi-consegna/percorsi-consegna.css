@@ -1,0 +1,46 @@
+.intestazione {
+  margin-bottom: 1.5rem;
+}
+
+.filtri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtro-magazzino {
+  flex: 0 1 300px;
+}
+
+.riepilogo {
+  padding-bottom: 0.5rem;
+}
+
+.mappa-contenitore {
+  position: relative;
+}
+
+.mappa {
+  height: calc(100vh - 290px);
+  min-height: 420px;
+  border: 1px solid var(--gs-bordo);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.06);
+  z-index: 0;
+}
+
+.suggerimento {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(13, 71, 161, 0.2);
+  font-weight: 500;
+  white-space: nowrap;
+}

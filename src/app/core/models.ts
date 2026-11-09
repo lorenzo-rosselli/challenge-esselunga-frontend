@@ -37,6 +37,24 @@ export interface Magazzino {
   posizione: Posizione;
 }
 
+/** Tappa del percorso di consegna (UC4). */
+export interface TappaPercorso {
+  ordine: number;
+  spesaId: string;
+  nomeCliente: string;
+  indirizzoConsegna: string;
+  posizione: Posizione;
+  distanzaDallaPrecedenteKm: number;
+}
+
+/** Percorso di consegna di un magazzino (UC4): partenza, tappe ordinate e rientro. */
+export interface Percorso {
+  magazzino: Magazzino;
+  tappe: TappaPercorso[];
+  distanzaRientroKm: number;
+  distanzaTotaleKm: number;
+}
+
 export interface Articolo {
   id: string;
   nome: string;

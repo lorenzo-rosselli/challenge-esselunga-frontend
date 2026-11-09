@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../config';
-import { Magazzino } from '../models';
+import { Magazzino, Percorso } from '../models';
 
 /**
  * Chiamate REST relative ai magazzini.
@@ -14,5 +14,10 @@ export class MagazzinoService {
 
   lista(): Observable<Magazzino[]> {
     return this.http.get<Magazzino[]>(this.url);
+  }
+
+  /** UC4 - Percorso di consegna delle spese pronte del magazzino, calcolato dal backend. */
+  percorso(id: string): Observable<Percorso> {
+    return this.http.get<Percorso>(`${this.url}/${id}/percorso`);
   }
 }

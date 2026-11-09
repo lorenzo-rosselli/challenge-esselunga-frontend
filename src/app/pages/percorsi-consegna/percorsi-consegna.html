@@ -1,0 +1,67 @@
+<div class="intestazione">
+  <div>
+    <h1 class="h3 mb-1">Percorsi di consegna</h1>
+    <p class="text-body-secondary mb-0">
+      Percorso del corriere dal magazzino agli indirizzi delle spese pronte, con rientro al
+      magazzino
+    </p>
+  </div>
+</div>
+
+<div class="filtri">
+  <div class="filtro-magazzino">
+    <label for="filtro-magazzino" class="form-label small mb-1">Magazzino</label>
+    <select
+      id="filtro-magazzino"
+      class="form-select"
+      [value]="magazzinoSelezionato()"
+      (change)="selezionaMagazzino($any($event.target).value)"
+    >
+      <option value="">Seleziona un magazzino</option>
+      @for (magazzino of magazzini(); track magazzino.id) {
+        <option [value]="magazzino.id">{{ magazzino.nome }}</option>
+      }
+    </select>
+  </div>
+
+  @if (caricamento()) {
+    <div class="spinner-border spinner-border-sm mb-2" role="status">
+      <span class="visually-hidden">Calcolo del percorso...</span>
+    </div>
+  }
+
+  @if (percorso(); as p) {
+    <span class="riepilogo small">
+      @if (p.tappe.length === 0) {
+        Nessuna spesa pronta per la consegna da questo magazzino.
+      } @else {
+        {{ p.tappe.length }} {{ p.tappe.length === 1 ? 'tappa' : 'tappe' }} · distanza in linea
+        d'aria {{ p.distanzaTotaleKm | number: '1.1-2' }} km (rientro compreso)
+      }
+    </span>
+  }
+</div>
+
+@if (errore()) {
+  <div class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>{{ errore() }}
+  </div>
+}
+
+@if (tracciatoApprossimato()) {
+  <div class="alert alert-warning small py-2" role="status">
+    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+    Servizio di percorso stradale non raggiungibile: le tappe sono collegate con linee dritte
+    nell'ordine calcolato.
+  </div>
+}
+
+<div class="mappa-contenitore">
+  <div #mappa class="mappa" aria-label="Mappa del percorso di consegna"></div>
+  @if (!magazzinoSelezionato()) {
+    <div class="suggerimento">
+      <i class="bi bi-geo-alt" aria-hidden="true"></i>
+      Seleziona un magazzino per visualizzare il percorso di consegna
+    </div>
+  }
+</div>
