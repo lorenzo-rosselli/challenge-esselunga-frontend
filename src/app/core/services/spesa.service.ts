@@ -32,6 +32,6 @@ export class SpesaService {
    * La versione evita avanzamenti doppi o basati su dati non aggiornati.
    */
   avanzaStato(id: string, versione: number): Observable<Spesa> {
-    return this.http.post<Spesa>(`${this.url}/${id}/avanza-stato`, { versione });
+    return this.http.patch<Spesa>(`${this.url}/${id}/avanza-stato`, { versione });
   }
 }
