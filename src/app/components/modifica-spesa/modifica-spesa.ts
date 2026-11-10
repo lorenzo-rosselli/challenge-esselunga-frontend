@@ -2,7 +2,9 @@ import { CurrencyPipe, DatePipe, DOCUMENT } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CampoIndirizzo } from '../campo-indirizzo/campo-indirizzo';
 import { ModificaSpesa, Spesa } from '../../core/models';
+import { SuggerimentoIndirizzo } from '../../core/services/geocodifica.service';
 import { SpesaService } from '../../core/services/spesa.service';
 import { messaggiErrore } from '../../shared/messaggi-errore';
 import { STATI_SPESA } from '../../shared/stato-spesa';
@@ -20,7 +22,7 @@ const NON_VUOTO = /\S/;
  */
 @Component({
   selector: 'app-modifica-spesa',
-  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe],
+  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe, CampoIndirizzo],
   templateUrl: './modifica-spesa.html',
   styleUrl: './modifica-spesa.css',
   host: { '(document:keydown.escape)': 'chiudi()' },
@@ -101,6 +103,26 @@ export class ModificaSpesaModale implements OnInit, OnDestroy {
   protected nonValido(campo: keyof typeof this.form.controls): boolean {
     const controllo = this.form.controls[campo];
     return controllo.invalid && controllo.touched;
+  }
+
+  /**
+   * Indirizzo scelto (o annullato) nel campo con i suggerimenti: come nella creazione,
+   * indirizzo e coordinate vengono valorizzati insieme e le coordinate non sono mostrate.
+   */
+  protected indirizzoScelto(scelta: SuggerimentoIndirizzo | null): void {
+    this.form.patchValue({
+      indirizzoConsegna: scelta?.indirizzo ?? '',
+      latitudine: scelta?.posizione.latitudine ?? null,
+      longitudine: scelta?.posizione.longitudine ?? null,
+    });
+  }
+
+  /** L'indirizzo non e' valido finche' non e' stato scelto dai suggerimenti (coordinate presenti). */
+  protected indirizzoNonValido(): boolean {
+    const controlli = this.form.controls;
+    const nonValido =
+      controlli.indirizzoConsegna.invalid || controlli.latitudine.invalid || controlli.longitudine.invalid;
+    return nonValido && controlli.indirizzoConsegna.touched;
   }
 
   protected chiudi(): void {

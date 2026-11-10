@@ -60,48 +60,13 @@
 
           <div class="col-12">
             <label for="modifica-indirizzo" class="form-label">Indirizzo di consegna</label>
-            <input
-              id="modifica-indirizzo"
-              type="text"
-              class="form-control"
-              formControlName="indirizzoConsegna"
-              [class.is-invalid]="nonValido('indirizzoConsegna')"
+            <app-campo-indirizzo
+              idCampo="modifica-indirizzo"
+              [valoreIniziale]="spesa().indirizzoConsegna"
+              [nonValido]="indirizzoNonValido()"
+              (indirizzoScelto)="indirizzoScelto($event)"
+              (toccato)="form.controls.indirizzoConsegna.markAsTouched()"
             />
-            <div class="invalid-feedback">L'indirizzo di consegna è obbligatorio.</div>
-          </div>
-
-          <div class="col-sm-6">
-            <label for="modifica-latitudine" class="form-label">Latitudine</label>
-            <input
-              id="modifica-latitudine"
-              type="number"
-              step="any"
-              class="form-control"
-              formControlName="latitudine"
-              [class.is-invalid]="nonValido('latitudine')"
-            />
-            <div class="invalid-feedback">Inserire una latitudine compresa tra -90 e 90.</div>
-          </div>
-
-          <div class="col-sm-6">
-            <label for="modifica-longitudine" class="form-label">Longitudine</label>
-            <input
-              id="modifica-longitudine"
-              type="number"
-              step="any"
-              class="form-control"
-              formControlName="longitudine"
-              [class.is-invalid]="nonValido('longitudine')"
-            />
-            <div class="invalid-feedback">Inserire una longitudine compresa tra -180 e 180.</div>
-          </div>
-
-          <div class="col-12">
-            <p class="small text-body-secondary mb-0">
-              <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-              Se si corregge l'indirizzo, aggiornare anche latitudine e longitudine: la posizione è
-              quella usata per il percorso di consegna.
-            </p>
           </div>
         </div>
 

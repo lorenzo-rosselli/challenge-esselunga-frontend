@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
 import {
@@ -21,13 +21,15 @@ const CARATTERI_MINIMI = 3;
   templateUrl: './campo-indirizzo.html',
   styleUrl: './campo-indirizzo.css',
 })
-export class CampoIndirizzo {
+export class CampoIndirizzo implements OnInit {
   private readonly geocodifica = inject(GeocodificaService);
 
   /** Id del campo, per collegarlo alla sua etichetta. */
   readonly idCampo = input('indirizzo');
   /** Evidenzia il campo come non valido. */
   readonly nonValido = input(false);
+  /** Indirizzo gia' presente all'apertura (es. in modifica): considerato gia' scelto. */
+  readonly valoreIniziale = input('');
 
   /** Indirizzo scelto dai suggerimenti, oppure null se il testo non corrisponde a una scelta. */
   readonly indirizzoScelto = output<SuggerimentoIndirizzo | null>();
@@ -70,6 +72,10 @@ export class CampoIndirizzo {
         this.evidenziato.set(-1);
         this.aperto.set(true);
       });
+  }
+
+  ngOnInit(): void {
+    this.testo.set(this.valoreIniziale());
   }
 
   protected digita(valore: string): void {
